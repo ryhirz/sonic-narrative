@@ -1,0 +1,12 @@
+# ---- 数据处理 ----
+pandas>=2.0
+
+# ---- 大模型调用（OpenAI 兼容格式：可接通义千问 / 硅基流动等）----
+openai>=1.0
+
+# ---- Web API 网关（FastAPI 平台后端）----
+fastapi>=0.110
+uvicorn[standard]>=0.27
+
+# ---- 前端交互层（Gradio）----
+gradio>=6.0
