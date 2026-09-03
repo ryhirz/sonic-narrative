@@ -1,0 +1,34 @@
+﻿track_name,artist,valence,energy,danceability,acousticness,tempo,album,popularity
+Blinding Lights,The Weeknd,0.81,0.83,0.56,0.01,171,After Hours,90
+Weightless,Marconi Union,0.2,0.08,0.15,0.95,60,Ambient Transmissions,55
+Levitating,Dua Lipa,0.88,0.77,0.8,0.08,103,Future Nostalgia,88
+Someone Like You,Adele,0.23,0.36,0.24,0.78,67,21,80
+Bad Guy,Billie Eilish,0.63,0.43,0.7,0.33,135,WHEN WE ALL FALL ASLEEP,92
+Heat Waves,Glass Animals,0.75,0.72,0.76,0.24,97,Dreamland,85
+Sunflower,Post Malone,0.75,0.66,0.75,0.18,90,Spider-Man: Into the Spider-Verse,93
+Bohemian Rhapsody,Queen,0.57,0.7,0.6,0.1,72,A Night at the Opera,88
+Imagine,John Lennon,0.4,0.25,0.3,0.8,76,Imagine,82
+Shape of You,Ed Sheeran,0.85,0.76,0.84,0.2,96,Divide,90
+Rolling in the Deep,Adele,0.34,0.78,0.45,0.1,105,21,87
+Watermelon Sugar,Harry Styles,0.89,0.72,0.79,0.15,99,Fine Line,86
+Save Your Tears,The Weeknd,0.64,0.74,0.62,0.06,113,After Hours,84
+Stay,The Kid LAROI,0.66,0.65,0.68,0.1,100,F*ck Love,89
+Anti-Hero,Taylor Swift,0.55,0.58,0.5,0.3,97,Midnights,91
+As It Was,Harry Styles,0.74,0.7,0.66,0.12,174,Harry's House,92
+Uptown Funk,Mark Ronson,0.94,0.83,0.89,0.05,115,Uptown Special,88
+Lose Yourself,Eminem,0.51,0.8,0.55,0.02,86,8 Mile,85
+Clocks,Coldplay,0.62,0.62,0.45,0.2,138,A Rush of Blood,84
+Viva La Vida,Coldplay,0.58,0.65,0.5,0.15,138,Viva la Vida,83
+Perfect,Ed Sheeran,0.78,0.32,0.38,0.82,95,Divide,89
+Let Her Go,Passenger,0.45,0.4,0.42,0.7,117,All the Little Lights,78
+Counting Stars,OneRepublic,0.66,0.72,0.55,0.18,122,Native,84
+Cheap Thrills,Sia,0.8,0.78,0.82,0.06,100,This Is Acting,82
+Believer,Imagine Dragons,0.42,0.85,0.48,0.04,125,Evolve,83
+Demons,Imagine Dragons,0.38,0.62,0.45,0.2,105,Night Visions,80
+Shallow,Lady Gaga,0.52,0.6,0.4,0.35,96,A Star Is Born,86
+Happier,Marshmello,0.7,0.68,0.72,0.1,100,Happier,81
+everything i wanted,Billie Eilish,0.45,0.45,0.5,0.4,83,Happier Than Ever,84
+Good Days,SZA,0.6,0.5,0.58,0.3,74,SOS,85
+Sail,AWOLNATION,0.3,0.75,0.4,0.05,105,Megalithic Symphony,70
+Nuvole Bianche,Ludovico Einaudi,0.35,0.2,0.1,0.95,60,Una Mattina,72
+River Flows in You,Yiruma,0.4,0.25,0.12,0.9,70,First Love,75

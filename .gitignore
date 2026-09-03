@@ -1,0 +1,29 @@
+# ===== Python 环境（体积大，且含平台相关路径，绝不入库）=====
+.venv/
+venv/
+env/
+
+# ===== 字节码 / 缓存 =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ===== 日志（运行产物）=====
+*.log
+server.log
+gradio.log
+
+# ===== 密钥 / 环境变量（绝不入库）=====
+.env
+.env.*
+*.key
+
+# ===== 打包元数据 =====
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ===== WorkBuddy 项目数据（非源码）=====
+.workbuddy/

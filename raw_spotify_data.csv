@@ -1,0 +1,12 @@
+﻿track_name,artist,valence,energy,danceability,acousticness,tempo,album,popularity
+Blinding Lights,The Weeknd,0.81,0.83,0.56,0.01,171,After Hours,90
+Weightless,Marconi Union,0.20,0.08,0.15,0.95,60,Ambient Transmissions,55
+Levitating,Dua Lipa,0.88,0.77,0.80,0.08,103,Future Nostalgia,88
+Someone Like You,Adele,0.23,0.36,0.24,0.78,67,21,80
+Bad Guy,Billie Eilish,0.63,0.43,0.70,0.33,135,WHEN WE ALL FALL ASLEEP,92
+Heat Waves,Glass Animals,,0.72,0.76,0.24,97,Dreamland,85
+Sunflower,,0.75,0.66,0.75,0.18,90,,93
+Test Max,Sanity Band,1.5,1.2,0.90,0.10,300,Tests,10
+Test Min,Sanity Band,-0.2,0.50,0.40,0.20,20,Tests,5
+Broken Row,Bug Band,abc,0.50,0.40,0.20,120,Bug,1
+Blinding Lights,The Weeknd,0.81,0.83,0.56,0.01,171,After Hours,90

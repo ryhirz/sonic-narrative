@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光轨迷宫 · SonicNarrative</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px 20px;
+font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+background:linear-gradient(135deg,#FFB7C5 0%,#FF9A9E 52%,#F48FB1 100%);
+background-attachment:fixed;position:relative;overflow-x:hidden}
+/* 背景两团缓慢游动的光斑，制造"呼吸感" */
+body::before{content:"";position:fixed;top:-120px;left:-80px;width:420px;height:420px;border-radius:50%;
+background:#FFB7C5;filter:blur(90px);opacity:.55;animation:float1 14s ease-in-out infinite}
+body::after{content:"";position:fixed;bottom:-140px;right:-100px;width:480px;height:480px;border-radius:50%;
+background:#F48FB1;filter:blur(110px);opacity:.5;animation:float2 18s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,40px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,-30px)}}
+/* 毛玻璃主体：深色半透明 + 背景模糊，保证任何配色下白字都可读 */
+.card{position:relative;z-index:1;width:100%;max-width:520px;padding:40px 36px 30px;border-radius:28px;
+background:rgba(16,18,28,.55);
+backdrop-filter:blur(26px) saturate(160%);-webkit-backdrop-filter:blur(26px) saturate(160%);
+border:1px solid rgba(255,255,255,.28);color:#fff;
+box-shadow:0 30px 70px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+.emoji-row{display:flex;gap:14px;font-size:32px;margin-bottom:18px}
+.emoji-row span{display:inline-block;animation:bob 3s ease-in-out infinite}
+.emoji-row span:nth-child(2){animation-delay:.4s}
+.emoji-row span:nth-child(3){animation-delay:.8s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.title{font-size:30px;font-weight:700;letter-spacing:3px;text-shadow:0 2px 14px rgba(0,0,0,.45)}
+.meta{margin-top:8px;font-size:13px;color:rgba(255,255,255,.72)}
+.palette{display:flex;gap:10px;margin:22px 0 20px}
+.swatch{flex:1;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.3)}
+.swatch .chip{height:52px}
+.swatch .hex{display:block;text-align:center;font-size:11px;padding:5px 0;background:rgba(0,0,0,.3);
+color:rgba(255,255,255,.92);font-family:ui-monospace,Consolas,monospace}
+.desc{font-size:15px;line-height:2;color:rgba(255,255,255,.96);text-shadow:0 1px 8px rgba(0,0,0,.3)}
+.prompt{margin-top:24px;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.18);
+border-radius:14px;padding:16px 18px}
+.prompt .label{font-size:11px;letter-spacing:1.5px;font-weight:700;color:rgba(255,255,255,.85)}
+.prompt .label::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;
+background:#FF9A9E;margin-right:8px;vertical-align:middle}
+.prompt code{display:block;margin-top:9px;font-size:12px;line-height:1.85;color:rgba(255,255,255,.86);
+font-family:ui-monospace,Consolas,monospace;word-break:break-word}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{font-size:11px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.14);
+border:1px solid rgba(255,255,255,.24);color:rgba(255,255,255,.92)}
+.footer{margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,.16);
+font-size:11px;color:rgba(255,255,255,.55)}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="emoji-row"><span>🌀</span><span>✨</span><span>💫</span></div>
+    <h1 class="title">光轨迷宫</h1>
+    <div class="meta">Levitating · Dua Lipa · 103 BPM</div>
+    <div class="palette"><div class="swatch"><div class="chip" style="background:#FFB7C5"></div><span class="hex">#FFB7C5</span></div><div class="swatch"><div class="chip" style="background:#FF9A9E"></div><span class="hex">#FF9A9E</span></div><div class="swatch"><div class="chip" style="background:#F48FB1"></div><span class="hex">#F48FB1</span></div></div>
+    <p class="desc">你站在一条发光的光轨迷宫中，地面是流动的金属质感，墙壁闪烁着渐变的暖光，空气中充满微弱的电流感与温热的触觉。</p>
+    <div class="prompt"><span class="label">AI ART PROMPT</span><code>A glowing labyrinth with dynamic light tracks, warm gradient tones, high contrast lighting, digital synthetic textures, repeating geometric patterns, vibrant and energetic atmosphere, 8k resolution, --ar 16:9</code></div>
+    <div class="chips"><span class="chip">情绪 Valence 0.88</span><span class="chip">能量 Energy 0.77</span><span class="chip">律动 Dance 0.80</span><span class="chip">原声 Acoustic 0.08</span><span class="chip">速度 BPM 103</span></div>
+    <div class="footer">SonicNarrative · 特征感知翻译器 · LLM 生成</div>
+  </div>
+</body>
+</html>
