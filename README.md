@@ -118,21 +118,36 @@ python -m venv .venv
 
 ### 接入真实大模型
 
-引擎走 **OpenAI 兼容协议**，换平台只需改 `.env`，代码一行不动：
+引擎走 **OpenAI 兼容协议**，换平台只需改 `.env` 三行，代码一行不动。
+
+> 🔑 **关键认知**：真正决定走哪个平台的是 **`DASHSCOPE_BASE_URL`**，不是变量名。
+> 变量名沿用 `DASHSCOPE_*` 只是代码里的历史命名——把 A 平台的 Key 配到 B 平台的
+> 端点上，**必然报 `401 invalid_api_key`**。（本项目就踩过这个坑：硅基流动的 Key
+> 配了百炼的端点。定位方法是「端点矩阵自检」——见下方排错提示。）
+
+**方案 A：硅基流动 SiliconFlow（本项目实测使用，有免费模型）**
 
 ```bash
-# 阿里云百炼 / 通义千问（默认端点）
-DASHSCOPE_API_KEY=sk-你的密钥
+DASHSCOPE_API_KEY=sk-你的硅基流动密钥
+DASHSCOPE_BASE_URL=https://api.siliconflow.cn/v1
+QWEN_MODEL=Qwen/Qwen3-8B
+```
+
+注册地址：https://cloud.siliconflow.cn/ → 「API 密钥」
+
+**方案 B：阿里云百炼 DashScope / 通义千问**
+
+```bash
+DASHSCOPE_API_KEY=sk-你的百炼密钥
 DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 QWEN_MODEL=qwen-plus
 ```
 
-换平台同理，例如硅基流动（免费模型可用）：
+获取地址：https://bailian.console.aliyun.com/ → 右上角「API-KEY」管理
 
-```bash
-DASHSCOPE_BASE_URL=https://api.siliconflow.cn/v1
-QWEN_MODEL=Qwen/Qwen3-8B
-```
+> 🔧 **报 401 时的排错法（端点矩阵自检）**：把同一个 Key 依次打到各平台的
+> `/v1/chat/completions`，谁回 200 就说明 Key 属于谁家。这一步能立刻把
+> 「Key 无效」和「端点配错」区分开——后者改一行就好，根本不用重新申请 Key。
 
 > ⚠️ **Key 只走环境变量 / `.env`，不要写进任何会被提交的文件。** `.env` 已在 `.gitignore` 中。
 
@@ -142,6 +157,10 @@ QWEN_MODEL=Qwen/Qwen3-8B
 ```bash
 .venv\Scripts\python.exe -m pytest tests/test_llm_live.py -v
 ```
+
+**✅ 已验证（2026-09-25）**：硅基流动 `Qwen/Qwen3-8B`，翻译器 + 反向寻歌
+**双链路真实大模型端到端跑通**；`/api/v1/health` 返回 `healthy`
+（active 2 / degraded 0 / planned 1），实测出卡耗时约 8s。
 
 ### 曲库数据来源（全部为真实 Spotify 特征）
 
@@ -328,7 +347,11 @@ SonicNarrative_Project/
 - Mock 模式是**按特征挑预设**，不是随机返回，但不具备真实模型的创造力。
 - 色彩基调由规则保证，具体色值由模型生成——两者结合，既有可解释性也有随机性。
 - **曲库 60 首，音频特征为真实 Spotify 数据**（来自公开数据集，非示例值）。规模仍不算大，最近邻的代表性随曲库增大而提升——`build_library_from_dataset.py --size 300` 即可扩容，引擎代码零改动（曲库走 mtime 缓存，改文件自动重载）。
-- **LLM 链路默认以 Mock / 关键词规则运行**：未配 `DASHSCOPE_API_KEY` 时不会调用真实大模型。管线本身（提示词 / 解析 / 校验 / 降级）已由 `tests/test_llm_branch_offline.py` 打桩验证；仅"真实网络调用"这一环需要 Key，配好后用 `pytest tests/test_llm_live.py -v` 验证。
+- **LLM 链路已真实跑通，但仍需自备 Key**：本项目已用硅基流动 `Qwen/Qwen3-8B` 完成
+  翻译器 + 反向寻歌双链路的真实大模型端到端验证（见"接入真实大模型"）。克隆本仓库后
+  若未在 `.env` 配 `DASHSCOPE_API_KEY`，则会自动降级为 Mock / 关键词规则——
+  功能不中断，但不调用真实大模型。管线完整性由 `tests/test_llm_branch_offline.py`
+  打桩保证（免 Key 免联网），真实网络链路由 `tests/test_llm_live.py` 覆盖。
 - **数据集风格偏当代热门**：公开数据集采样自 114 个流派，曲风集中在流行/拉丁/舞曲；若想要特定年代的曲库，用 `fetch_spotify_features.py` 按你的歌单实时抓取。
 
 ---
@@ -366,7 +389,8 @@ Mock / 关键词规则）；真实大模型链路另有一组 `live` 测试，**
 | LLM 分支（离线） | `tests/test_llm_branch_offline.py` | 打桩验证 LLM 管线：渲染 / 降级 / 脏数据修复 / 越界夹回（7） | monkeypatch 假客户端，免 Key 免联网 |
 | 真实 LLM（在线） | `tests/test_llm_live.py` | 卡片确由大模型生成、反向寻歌 `mode=llm`（2） | `skipif` 无 Key 自动跳过 |
 
-当前实测：**40 passed, 2 skipped**（skipped 即 live 测试，未配 Key 时的预期行为）。
+当前实测：**42 passed, 0 skipped**（已配 Key，2 条 live 测试真实跑通）。
+未配 Key 时为 `40 passed, 2 skipped` —— skipped 即 live 测试的预期行为，不会让常规测试变红。
 
 > 分工要点：`offline` 那组把大模型返回**打桩**，验证「提示词 → 解析 → 校验 → 渲染 → 降级」
 > 整条管线（秒级、免 Key、CI 常绿）；`live` 那组才真连模型，验证网络与鉴权。
