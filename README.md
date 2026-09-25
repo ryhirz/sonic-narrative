@@ -262,7 +262,34 @@ SonicNarrative_Project/
 - 免费/小参数模型（7B–8B）存在**用词与配色收敛**倾向，本项目已用「规则约束 + 批次去重」缓解，换用更大参数模型可进一步改善。
 - Mock 模式是**按特征挑预设**，不是随机返回，但不具备真实模型的创造力。
 - 色彩基调由规则保证，具体色值由模型生成——两者结合，既有可解释性也有随机性。
-- **反向寻歌的曲库越小，最近邻的代表性越弱**。当前 demo 曲库仅 6 首有效歌曲（`clean_spotify_data.csv` 10 行里过滤了 4 行测试脏数据），结果仅供演示；扩大曲库后推荐质量会明显提升——只需往 CSV 里追加真实歌曲即可，无需改代码。
+- **反向寻歌的曲库越小，最近邻的代表性越弱**。当前 demo 曲库 33 首（约 26 首为 Spotify 音频特征的近似示例值，区间覆盖全），结果仅供演示；扩大曲库后推荐质量会明显提升——只需往 `clean_spotify_data.csv` 追加真实歌曲即可，引擎代码零改动。
+
+---
+
+## 十、测试
+
+项目用 `pytest` 做三层验证，全部**不需要起服务、不需要 API Key**：
+
+```bash
+# 装测试依赖（已装可跳过）
+.venv\Scripts\python.exe -m pip install pytest --index-url https://pypi.org/simple
+
+# 跑全部测试
+.venv\Scripts\python.exe -m pytest -q
+
+# 只跑某一层
+.venv\Scripts\python.exe -m pytest tests/test_reverse_engine.py -q   # 纯函数
+.venv\Scripts\python.exe -m pytest tests/test_synesthesia.py -q       # 引擎容错
+.venv\Scripts\python.exe -m pytest tests/test_api.py -q               # API 集成
+```
+
+| 层 | 文件 | 测什么 | 关键技术 |
+|---|---|---|---|
+| 单元测试 | `tests/test_reverse_engine.py` | 距离/匹配度/曲库加载/关键词兜底 | 纯函数直接断言 |
+| 引擎测试 | `tests/test_synesthesia.py` | 特征夹回、Mock 出卡、文件名安全 | `use_llm=False` 不联网 |
+| API 集成 | `tests/test_api.py` | /health /reverse /library /translate /422 /CORS | `FastAPI TestClient` 内存调 |
+
+**加新用例**：在对应文件里写一个 `def test_xxx():`，用 `assert` 表达预期，再跑 `pytest`。退出码 `0`=全通过、`非0`=有失败，可直接接 CI。
 
 ---
 
