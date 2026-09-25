@@ -272,6 +272,7 @@ SonicNarrative_Project/
 │   ├── test_api.py                     # API 集成：TestClient 内存调
 │   ├── test_fetch_spotify.py           # 抓取脚本纯逻辑（凭证 / 列契约）
 │   ├── test_build_library.py           # 曲库构建逻辑（归一化 / 配额 / 覆盖）
+│   ├── test_llm_branch_offline.py      # LLM 管线打桩验证（免 Key / 免联网）
 │   └── test_llm_live.py                # 真实大模型端到端（无 Key 自动 skip）
 ├── core/                               # 平台配置 / 日志 / 子模块运行时探测
 │   ├── config.py                       # 路径、CORS、MODULES 注册表、probe 函数
@@ -327,7 +328,7 @@ SonicNarrative_Project/
 - Mock 模式是**按特征挑预设**，不是随机返回，但不具备真实模型的创造力。
 - 色彩基调由规则保证，具体色值由模型生成——两者结合，既有可解释性也有随机性。
 - **曲库 60 首，音频特征为真实 Spotify 数据**（来自公开数据集，非示例值）。规模仍不算大，最近邻的代表性随曲库增大而提升——`build_library_from_dataset.py --size 300` 即可扩容，引擎代码零改动（曲库走 mtime 缓存，改文件自动重载）。
-- **LLM 链路默认以 Mock / 关键词规则运行**：未配 `DASHSCOPE_API_KEY` 时不会调用真实大模型。配好 Key 后，用 `pytest tests/test_llm_live.py -v` 即可验证真实链路是否通。
+- **LLM 链路默认以 Mock / 关键词规则运行**：未配 `DASHSCOPE_API_KEY` 时不会调用真实大模型。管线本身（提示词 / 解析 / 校验 / 降级）已由 `tests/test_llm_branch_offline.py` 打桩验证；仅"真实网络调用"这一环需要 Key，配好后用 `pytest tests/test_llm_live.py -v` 验证。
 - **数据集风格偏当代热门**：公开数据集采样自 114 个流派，曲风集中在流行/拉丁/舞曲；若想要特定年代的曲库，用 `fetch_spotify_features.py` 按你的歌单实时抓取。
 
 ---
@@ -362,9 +363,14 @@ Mock / 关键词规则）；真实大模型链路另有一组 `live` 测试，**
 | API 集成 | `tests/test_api.py` | /health /reverse /library /translate /422 /CORS（6） | `FastAPI TestClient` 内存调 |
 | 抓取脚本 | `tests/test_fetch_spotify.py` | 凭证读取、无凭证安全退出、输出列契约（5） | monkeypatch 隔离环境变量 |
 | 曲库构建 | `tests/test_build_library.py` | 归一化、艺人配额、愿望清单命中/未命中（9） | 合成 DataFrame 不起网络 |
-| 真实 LLM | `tests/test_llm_live.py` | 卡片确由大模型生成、反向寻歌 `mode=llm`（2） | `skipif` 无 Key 自动跳过 |
+| LLM 分支（离线） | `tests/test_llm_branch_offline.py` | 打桩验证 LLM 管线：渲染 / 降级 / 脏数据修复 / 越界夹回（7） | monkeypatch 假客户端，免 Key 免联网 |
+| 真实 LLM（在线） | `tests/test_llm_live.py` | 卡片确由大模型生成、反向寻歌 `mode=llm`（2） | `skipif` 无 Key 自动跳过 |
 
-当前实测：**33 passed, 2 skipped**（skipped 即 live 测试，未配 Key 时的预期行为）。
+当前实测：**40 passed, 2 skipped**（skipped 即 live 测试，未配 Key 时的预期行为）。
+
+> 分工要点：`offline` 那组把大模型返回**打桩**，验证「提示词 → 解析 → 校验 → 渲染 → 降级」
+> 整条管线（秒级、免 Key、CI 常绿）；`live` 那组才真连模型，验证网络与鉴权。
+> 两者合起来，才能说 LLM 链路"既写对了、也跑通了"。
 
 **加新用例**：在对应文件里写一个 `def test_xxx():`，用 `assert` 表达预期，再跑 `pytest`。退出码 `0`=全通过、`非0`=有失败，可直接接 CI。
 
