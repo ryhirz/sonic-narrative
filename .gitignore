@@ -27,5 +27,8 @@ gradio.log
 .pytest_cache/
 .mypy_cache/
 
+# ===== 数据缓存（公开数据集下载缓存，体积大，不入库）=====
+.cache/
+
 # ===== WorkBuddy 项目数据（非源码）=====
 .workbuddy/

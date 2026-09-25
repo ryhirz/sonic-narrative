@@ -143,14 +143,26 @@ QWEN_MODEL=Qwen/Qwen3-8B
 .venv\Scripts\python.exe -m pytest tests/test_llm_live.py -v
 ```
 
-### 曲库数据来源
+### 曲库数据来源（全部为真实 Spotify 特征）
 
-`clean_spotify_data.csv` 里的 33 首歌，音频特征是**近似示例值**——区间与分布
-刻意贴合真实 Spotify 特征（valence 0.20~0.94、energy 0.08~0.85、
-acousticness 0.01~0.95、tempo 60~174），保证离线可演示；但**不是逐首实测**。
+当前 `clean_spotify_data.csv` 共 **60 首**，音频特征**全部来自真实 Spotify API 数据**，
+不是示例值。两条构建路径，产出同一种 CSV，可互相替换：
 
-要换成 Spotify 官方实测特征，用 `fetch_spotify_features.py`（Client Credentials，
-无需用户登录授权）：
+**路径 A（默认，免凭证 · 离线可复现）—— 用公开数据集构建**
+
+```bash
+# 首次会自动下载数据集到 .cache/（约 20MB，走 hf-mirror 国内镜像）
+.venv\Scripts\python.exe build_library_from_dataset.py
+.venv\Scripts\python.exe build_library_from_dataset.py --size 80 --min-popularity 55
+```
+
+- 数据源：[`maharshipandya/spotify-tracks-dataset`](https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset)
+  （11.4 万首，特征由 Spotify Web API 于 2023 年抓取）
+- 选曲策略：① 原曲库能匹配到的曲目优先保留；② 剩余名额按 **valence × energy 的 4×4 网格**
+  做覆盖优化，保证每个情绪/能量象限都有歌；③ 全程限制**同一艺人最多 2 首**，避免单一风格霸榜
+- 实测产出：60 首 / 50 位艺人 / **16 个情绪象限全覆盖**，原曲库保留 27/33 首
+
+**路径 B（需要凭证 · 实时抓取指定曲目）—— 用 Spotify Web API**
 
 ```bash
 # 1) 把凭证填进 .env：SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET
@@ -162,7 +174,7 @@ acousticness 0.01~0.95、tempo 60~174），保证离线可演示；但**不是�
 ```
 
 > ⚠️ Spotify 已于 2024-11 对**新建应用**下线 `audio-features` 接口；若返回 403，
-> 请改用 2024-11 之前创建的旧 app，或换公开特征数据集。脚本会给出明确提示。
+> 请改用 2024-11 之前创建的旧 app，或直接用上面的路径 A。脚本会给出明确提示。
 > 抓取脚本**绝不丢歌**：搜不到的条目一律原样保留。
 
 ---
@@ -250,7 +262,8 @@ SonicNarrative_Project/
 ├── reverse_engine.py                   # v2：反向寻歌引擎（描述 → 特征 → 最近邻）
 ├── usage_example.py                    # 第三步：单函数封装的用法示例
 ├── build_report.py                     # 数据故事报告生成器
-├── fetch_spotify_features.py           # 用 Spotify Web API 抓【真实】音频特征覆写曲库
+├── fetch_spotify_features.py           # 路径B：用 Spotify Web API 实时抓真实特征（需凭证）
+├── build_library_from_dataset.py       # 路径A：用公开数据集构建真实曲库（免凭证，默认）
 ├── main.py                             # FastAPI 平台 API 网关（挂载各子模块路由 / 健康检查）
 ├── gradio_app.py                       # Gradio 前端交互层（纯 HTTP 调后端）
 ├── tests/                              # pytest 三层测试 + 真实 LLM 集成测试
@@ -258,6 +271,7 @@ SonicNarrative_Project/
 │   ├── test_synesthesia.py             # 引擎容错：特征夹回 / Mock 出卡
 │   ├── test_api.py                     # API 集成：TestClient 内存调
 │   ├── test_fetch_spotify.py           # 抓取脚本纯逻辑（凭证 / 列契约）
+│   ├── test_build_library.py           # 曲库构建逻辑（归一化 / 配额 / 覆盖）
 │   └── test_llm_live.py                # 真实大模型端到端（无 Key 自动 skip）
 ├── core/                               # 平台配置 / 日志 / 子模块运行时探测
 │   ├── config.py                       # 路径、CORS、MODULES 注册表、probe 函数
@@ -270,7 +284,8 @@ SonicNarrative_Project/
 │   ├── synesthesia.py                  # 翻译器契约
 │   └── recommender.py                  # 反向寻歌契约
 ├── raw_spotify_data.csv                # 原始脏数据（含缺失/越界/重复，用于自测）
-├── clean_spotify_data.csv              # 清洗后的数据（反向寻歌的曲库）
+├── clean_spotify_data.csv              # 曲库（60 首，真实 Spotify 特征）
+├── .cache/                             # 公开数据集下载缓存（已 gitignore，不入库）
 ├── SonicNarrative_Insight_Report.md    # 生成的洞察报告
 ├── output_cards/                       # 生成的 HTML 感知卡片
 ├── .env.example                        # 环境变量模板（复制为 .env 后填密钥）
@@ -285,7 +300,7 @@ SonicNarrative_Project/
 
 - **v1（已完成）**：正向翻译（特征 → HTML 卡片）、批量报告生成
 - **v2（进行中）**：反向寻歌 ✅ **已上线**（描述感受 → 反推特征 → 加权欧氏距离最近邻检索，**无需 embedding / 向量库**）；上传音频自动提取特征（librosa，规划中）
-- **数据工程**：曲库真实音频特征抓取 ✅ **已提供**（`fetch_spotify_features.py`，走 Spotify Web API Client Credentials，无需用户登录）
+- **数据工程**：曲库真实音频特征 ✅ **已落地**（60 首全部为真实 Spotify 特征；`build_library_from_dataset.py` 免凭证用公开数据集构建，`fetch_spotify_features.py` 可带凭证实时抓取）
 - **v3（构想）**：自定义映射参数、3D 沉浸式场景、社区歌单分享
 
 ### v2 反向寻歌（Reverse Recommender）核心思路
@@ -311,9 +326,9 @@ SonicNarrative_Project/
 - 免费/小参数模型（7B–8B）存在**用词与配色收敛**倾向，本项目已用「规则约束 + 批次去重」缓解，换用更大参数模型可进一步改善。
 - Mock 模式是**按特征挑预设**，不是随机返回，但不具备真实模型的创造力。
 - 色彩基调由规则保证，具体色值由模型生成——两者结合，既有可解释性也有随机性。
-- **曲库 33 首，音频特征目前是「近似示例值」**（区间与分布刻意贴合真实 Spotify 特征，但不是逐首实测）。已提供 `fetch_spotify_features.py` 可一键换成 Spotify 官方实测值，引擎代码零改动、只需重抓一次 CSV。
+- **曲库 60 首，音频特征为真实 Spotify 数据**（来自公开数据集，非示例值）。规模仍不算大，最近邻的代表性随曲库增大而提升——`build_library_from_dataset.py --size 300` 即可扩容，引擎代码零改动（曲库走 mtime 缓存，改文件自动重载）。
 - **LLM 链路默认以 Mock / 关键词规则运行**：未配 `DASHSCOPE_API_KEY` 时不会调用真实大模型。配好 Key 后，用 `pytest tests/test_llm_live.py -v` 即可验证真实链路是否通。
-- **曲库仍偏小**：最近邻的代表性随曲库增大而提升。往 `clean_spotify_data.csv` 追加歌曲即可，引擎代码零改动（曲库走 mtime 缓存，改文件自动重载）。
+- **数据集风格偏当代热门**：公开数据集采样自 114 个流派，曲风集中在流行/拉丁/舞曲；若想要特定年代的曲库，用 `fetch_spotify_features.py` 按你的歌单实时抓取。
 
 ---
 
@@ -346,9 +361,10 @@ Mock / 关键词规则）；真实大模型链路另有一组 `live` 测试，**
 | 引擎测试 | `tests/test_synesthesia.py` | 特征夹回、Mock 出卡、文件名安全（4） | `use_llm=False` 不联网 |
 | API 集成 | `tests/test_api.py` | /health /reverse /library /translate /422 /CORS（6） | `FastAPI TestClient` 内存调 |
 | 抓取脚本 | `tests/test_fetch_spotify.py` | 凭证读取、无凭证安全退出、输出列契约（5） | monkeypatch 隔离环境变量 |
+| 曲库构建 | `tests/test_build_library.py` | 归一化、艺人配额、愿望清单命中/未命中（9） | 合成 DataFrame 不起网络 |
 | 真实 LLM | `tests/test_llm_live.py` | 卡片确由大模型生成、反向寻歌 `mode=llm`（2） | `skipif` 无 Key 自动跳过 |
 
-当前实测：**24 passed, 2 skipped**（skipped 即 live 测试，未配 Key 时的预期行为）。
+当前实测：**33 passed, 2 skipped**（skipped 即 live 测试，未配 Key 时的预期行为）。
 
 **加新用例**：在对应文件里写一个 `def test_xxx():`，用 `assert` 表达预期，再跑 `pytest`。退出码 `0`=全通过、`非0`=有失败，可直接接 CI。
 

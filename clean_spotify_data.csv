@@ -1,34 +1,61 @@
 ﻿track_name,artist,valence,energy,danceability,acousticness,tempo,album,popularity
-Blinding Lights,The Weeknd,0.81,0.83,0.56,0.01,171,After Hours,90
-Weightless,Marconi Union,0.2,0.08,0.15,0.95,60,Ambient Transmissions,55
-Levitating,Dua Lipa,0.88,0.77,0.8,0.08,103,Future Nostalgia,88
-Someone Like You,Adele,0.23,0.36,0.24,0.78,67,21,80
-Bad Guy,Billie Eilish,0.63,0.43,0.7,0.33,135,WHEN WE ALL FALL ASLEEP,92
-Heat Waves,Glass Animals,0.75,0.72,0.76,0.24,97,Dreamland,85
-Sunflower,Post Malone,0.75,0.66,0.75,0.18,90,Spider-Man: Into the Spider-Verse,93
-Bohemian Rhapsody,Queen,0.57,0.7,0.6,0.1,72,A Night at the Opera,88
-Imagine,John Lennon,0.4,0.25,0.3,0.8,76,Imagine,82
-Shape of You,Ed Sheeran,0.85,0.76,0.84,0.2,96,Divide,90
-Rolling in the Deep,Adele,0.34,0.78,0.45,0.1,105,21,87
-Watermelon Sugar,Harry Styles,0.89,0.72,0.79,0.15,99,Fine Line,86
-Save Your Tears,The Weeknd,0.64,0.74,0.62,0.06,113,After Hours,84
-Stay,The Kid LAROI,0.66,0.65,0.68,0.1,100,F*ck Love,89
-Anti-Hero,Taylor Swift,0.55,0.58,0.5,0.3,97,Midnights,91
-As It Was,Harry Styles,0.74,0.7,0.66,0.12,174,Harry's House,92
-Uptown Funk,Mark Ronson,0.94,0.83,0.89,0.05,115,Uptown Special,88
-Lose Yourself,Eminem,0.51,0.8,0.55,0.02,86,8 Mile,85
-Clocks,Coldplay,0.62,0.62,0.45,0.2,138,A Rush of Blood,84
-Viva La Vida,Coldplay,0.58,0.65,0.5,0.15,138,Viva la Vida,83
-Perfect,Ed Sheeran,0.78,0.32,0.38,0.82,95,Divide,89
-Let Her Go,Passenger,0.45,0.4,0.42,0.7,117,All the Little Lights,78
-Counting Stars,OneRepublic,0.66,0.72,0.55,0.18,122,Native,84
-Cheap Thrills,Sia,0.8,0.78,0.82,0.06,100,This Is Acting,82
-Believer,Imagine Dragons,0.42,0.85,0.48,0.04,125,Evolve,83
-Demons,Imagine Dragons,0.38,0.62,0.45,0.2,105,Night Visions,80
-Shallow,Lady Gaga,0.52,0.6,0.4,0.35,96,A Star Is Born,86
-Happier,Marshmello,0.7,0.68,0.72,0.1,100,Happier,81
-everything i wanted,Billie Eilish,0.45,0.45,0.5,0.4,83,Happier Than Ever,84
-Good Days,SZA,0.6,0.5,0.58,0.3,74,SOS,85
-Sail,AWOLNATION,0.3,0.75,0.4,0.05,105,Megalithic Symphony,70
-Nuvole Bianche,Ludovico Einaudi,0.35,0.2,0.1,0.95,60,Una Mattina,72
-River Flows in You,Yiruma,0.4,0.25,0.12,0.9,70,First Love,75
+Unholy (feat. Kim Petras),"Sam Smith, Kim Petras",0.238,0.472,0.714,0.013,131.1,Unholy (feat. Kim Petras),100
+"Quevedo: Bzrp Music Sessions, Vol. 52","Bizarrap, Quevedo",0.55,0.782,0.621,0.013,128.0,"Quevedo: Bzrp Music Sessions, Vol. 52",99
+La Bachata,Manuel Turizo,0.85,0.679,0.835,0.583,125.0,La Bachata,98
+I'm Good (Blue),"David Guetta, Bebe Rexha",0.304,0.965,0.561,0.004,128.0,I'm Good (Blue),98
+Me Porto Bonito,"Bad Bunny, Chencho Corleone",0.425,0.712,0.911,0.09,92.0,Un Verano Sin Ti,97
+Tití Me Preguntó,Bad Bunny,0.187,0.715,0.65,0.099,106.7,Un Verano Sin Ti,97
+I Ain't Worried,OneRepublic,0.825,0.797,0.704,0.083,140.0,"I Ain’t Worried (Music From The Motion Picture ""Top Gun: Maverick"")",96
+Under The Influence,Chris Brown,0.31,0.69,0.733,0.064,117.0,Indigo (Extended),96
+As It Was,Harry Styles,0.662,0.731,0.52,0.342,173.9,As It Was,95
+Glimpse of Us,Joji,0.268,0.317,0.44,0.891,169.9,Glimpse of Us,94
+Sweater Weather,The Neighbourhood,0.398,0.807,0.612,0.05,124.1,I Love You.,93
+Another Love,Tom Odell,0.131,0.537,0.445,0.695,122.8,Long Way Down (Deluxe),93
+CUFF IT,Beyoncé,0.642,0.689,0.78,0.037,115.0,RENAISSANCE,93
+PROVENZA,KAROL G,0.53,0.516,0.87,0.656,111.0,PROVENZA,93
+Left and Right (Feat. Jung Kook of BTS),"Charlie Puth, Jung Kook, BTS",0.719,0.592,0.881,0.619,101.1,Left and Right (Feat. Jung Kook of BTS),92
+I Wanna Be Yours,Arctic Monkeys,0.479,0.417,0.464,0.136,67.5,AM,92
+Calm Down (with Selena Gomez),"Rema, Selena Gomez",0.802,0.806,0.801,0.382,107.0,Calm Down (with Selena Gomez),92
+Super Freaky Girl,Nicki Minaj,0.912,0.891,0.95,0.065,133.0,Super Freaky Girl,92
+Blinding Lights,The Weeknd,0.334,0.73,0.514,0.001,171.0,After Hours,91
+Caile,Luar La L,0.461,0.756,0.704,0.298,121.7,L3tra,91
+LOKERA,"Rauw Alejandro, Lyanno, Brray",0.58,0.828,0.834,0.21,102.0,LOKERA,91
+Jimmy Cooks (feat. 21 Savage),"Drake, 21 Savage",0.366,0.673,0.529,0.0,165.9,"Honestly, Nevermind",91
+GATÚBELA,"KAROL G, Maldy",0.342,0.858,0.627,0.263,92.5,GATÚBELA,90
+Running Up That Hill (A Deal With God),Kate Bush,0.197,0.547,0.629,0.72,108.4,Hounds Of Love,90
+"Sex, Drugs, Etc.",Beach Weather,0.465,0.839,0.572,0.013,144.0,Chit Chat,90
+MIDDLE OF THE NIGHT,Elley Duhé,0.09,0.611,0.41,0.023,185.7,MIDDLE OF THE NIGHT,90
+Until I Found You,Stephen Sanchez,0.227,0.508,0.539,0.727,101.4,Until I Found You,90
+Dandelions,Ruth B.,0.454,0.692,0.609,0.016,117.0,Safe Haven,90
+Ferrari,"James Hype, Miggy Dela Rosa",0.692,0.69,0.847,0.013,125.0,Ferrari,90
+Atlantis,Seafret,0.213,0.479,0.4,0.053,166.2,Tell Me It's Real (Expanded Edition),90
+Watermelon Sugar,Harry Styles,0.557,0.816,0.548,0.122,95.4,Fine Line,89
+Save Your Tears,The Weeknd,0.644,0.826,0.68,0.021,118.1,After Hours,89
+STAY (with Justin Bieber),"The Kid LAROI, Justin Bieber",0.478,0.764,0.591,0.038,169.9,STAY (with Justin Bieber),89
+Heat Waves,Glass Animals,0.531,0.525,0.761,0.44,80.9,Dreamland (+ Bonus Levels),88
+Believer,Imagine Dragons,0.666,0.78,0.776,0.062,124.9,Evolve,88
+505,Arctic Monkeys,0.248,0.866,0.526,0.003,140.3,Favourite Worst Nightmare,88
+Perfect,Ed Sheeran,0.168,0.448,0.599,0.163,95.0,÷ (Deluxe),87
+Shape of You,Ed Sheeran,0.931,0.652,0.825,0.581,96.0,÷ (Deluxe),86
+everything i wanted,Billie Eilish,0.243,0.225,0.704,0.902,120.0,everything i wanted,86
+Levitating (feat. DaBaby),"Dua Lipa, DaBaby",0.915,0.825,0.702,0.009,103.0,Future Nostalgia,85
+bad guy,Billie Eilish,0.562,0.425,0.701,0.328,135.1,"WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",84
+Demons,Imagine Dragons,0.428,0.71,0.505,0.19,89.9,Night Visions,84
+Shallow,"Lady Gaga, Bradley Cooper",0.323,0.385,0.572,0.371,95.8,A Star Is Born Soundtrack,84
+Uptown Funk (feat. Bruno Mars),"Mark Ronson, Bruno Mars",0.928,0.609,0.856,0.008,115.0,Uptown Special,83
+Counting Stars,OneRepublic,0.477,0.705,0.664,0.065,122.0,Native,83
+Happier,"Marshmello, Bastille",0.671,0.792,0.687,0.191,100.0,Happier,83
+Bohemian Rhapsody - Remastered 2011,Queen,0.224,0.404,0.414,0.271,71.1,A Night At The Opera (2011 Remaster),82
+Someone Like You,Adele,0.294,0.319,0.556,0.893,135.2,21,81
+Rolling in the Deep,Adele,0.507,0.769,0.73,0.138,104.9,21,81
+Chaand Baaliyan,Aditya A,0.886,0.396,0.729,0.796,97.3,Chaand Baaliyan,81
+"Lose Yourself - From ""8 Mile"" Soundtrack",Eminem,0.06,0.735,0.686,0.009,171.4,Just Lose It,79
+comethru,Jeremy Zucker,0.608,0.178,0.795,0.607,94.0,"summer,",79
+Cheap Thrills,Sia,0.732,0.698,0.628,0.047,90.0,This Is Acting,78
+Imagine - Remastered 2010,John Lennon,0.169,0.257,0.547,0.907,75.8,Imagine,77
+Wonderful Tonight,Eric Clapton,0.485,0.214,0.572,0.649,95.5,Slowhand 35th Anniversary (Super Deluxe),76
+Let Her Go,Passenger,0.217,0.541,0.445,0.359,76.3,All the Little Lights (Deluxe),75
+Nuvole Bianche,Ludovico Einaudi,0.045,0.058,0.191,0.961,132.6,Una Mattina,73
+River Flows In You,Yiruma,0.116,0.22,0.315,0.987,145.2,Yiruma 2nd Album 'First Love' (The Original & the Very First Recording),71
+We Belong Together,Ritchie Valens,0.768,0.247,0.684,0.872,106.5,Ritchie Valens,69
+Weightless,Marconi Union,0.079,0.22,0.139,0.856,71.4,The Ambient Zone Just Music Cafe Vol 4,68
