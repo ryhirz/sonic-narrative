@@ -10,3 +10,12 @@ uvicorn[standard]>=0.27
 
 # ---- 前端交互层（Gradio）----
 gradio>=6.0
+
+# ---- 配置加载（读取 .env 中的密钥，密钥不入库）----
+python-dotenv>=1.0
+
+# ---- HTTP 客户端（前端调后端 / Spotify 抓数据）----
+httpx>=0.27
+
+# ---- 测试 ----
+pytest>=8.0

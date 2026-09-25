@@ -20,9 +20,19 @@
 
 from __future__ import annotations
 
+import os
 import time
 from contextlib import asynccontextmanager
 from typing import List
+
+# 最先加载项目根目录的 .env —— 让 DASHSCOPE_API_KEY / SONIC_CORS_ORIGINS
+# 等配置在任何模块读取之前就已就位（.env 已在 .gitignore 中，密钥不入库）。
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+except Exception:
+    pass
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError

@@ -81,21 +81,28 @@ flowchart LR
 ```bash
 # 1. 建虚拟环境（放在项目目录内，不占 C 盘）
 python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+.venv\Scripts\python.exe -m pip install -r requirements.txt -i https://pypi.org/simple
 
-# 2. 清洗数据
+# 2. 配置密钥（可选）—— 复制模板后填写即可
+#    copy  .env.example  .env
+#    不填也能跑：平台会自动进入 Mock 模式，功能完整、照样可演示
+
+# 3. 清洗数据
 .venv\Scripts\python.exe data_cleaning.py
 
-# 3. 批量生成卡片（不配 Key 也能跑，会自动进入 Mock 模式）
+# 4. 批量生成卡片（不配 Key 也能跑，会自动进入 Mock 模式）
 .venv\Scripts\python.exe synesthesia_core.py
 
-# 4. 生成数据故事报告
+# 5. 生成数据故事报告
 .venv\Scripts\python.exe build_report.py
 
-# 5. 启动平台（先后端、再前端）
+# 6. 启动平台（先后端、再前端）
 .venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
 .venv\Scripts\python.exe gradio_app.py        # 浏览器打开 http://127.0.0.1:7860
 ```
+
+> 所有密钥统一写在项目根目录的 `.env`（已在 `.gitignore` 中，永不入库）。
+> 模板见 `.env.example`，包含大模型与 Spotify 两组配置。
 
 ### 平台 API 一览（FastAPI 网关）
 
@@ -111,21 +118,52 @@ python -m venv .venv
 
 ### 接入真实大模型
 
-引擎走 **OpenAI 兼容协议**，换平台只需改环境变量，不用动代码：
+引擎走 **OpenAI 兼容协议**，换平台只需改 `.env`，代码一行不动：
 
 ```bash
-# 硅基流动（免费模型可用，如 Qwen/Qwen3-8B）
-set DASHSCOPE_API_KEY=sk-你的密钥
-set DASHSCOPE_BASE_URL=https://api.siliconflow.cn/v1
-set QWEN_MODEL=Qwen/Qwen3-8B
-
-# 阿里云百炼（默认端点，免费额度需选「华北2-北京」地域）
-set DASHSCOPE_API_KEY=sk-你的密钥
-set DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-set QWEN_MODEL=qwen-plus
+# 阿里云百炼 / 通义千问（默认端点）
+DASHSCOPE_API_KEY=sk-你的密钥
+DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+QWEN_MODEL=qwen-plus
 ```
 
-> ⚠️ **Key 只走环境变量，不要写进任何文件。**
+换平台同理，例如硅基流动（免费模型可用）：
+
+```bash
+DASHSCOPE_BASE_URL=https://api.siliconflow.cn/v1
+QWEN_MODEL=Qwen/Qwen3-8B
+```
+
+> ⚠️ **Key 只走环境变量 / `.env`，不要写进任何会被提交的文件。** `.env` 已在 `.gitignore` 中。
+
+配好 Key 后，用一组**真实大模型集成测试**一键验证链路是否真的通了
+（无 Key 时自动跳过，不会让常规测试变红）：
+
+```bash
+.venv\Scripts\python.exe -m pytest tests/test_llm_live.py -v
+```
+
+### 曲库数据来源
+
+`clean_spotify_data.csv` 里的 33 首歌，音频特征是**近似示例值**——区间与分布
+刻意贴合真实 Spotify 特征（valence 0.20~0.94、energy 0.08~0.85、
+acousticness 0.01~0.95、tempo 60~174），保证离线可演示；但**不是逐首实测**。
+
+要换成 Spotify 官方实测特征，用 `fetch_spotify_features.py`（Client Credentials，
+无需用户登录授权）：
+
+```bash
+# 1) 把凭证填进 .env：SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET
+#    申请：https://developer.spotify.com/dashboard -> Create app
+# 2) 先验证凭证可用
+.venv\Scripts\python.exe fetch_spotify_features.py --check
+# 3) 抓取并覆写（建议先输出到新文件，方便对比）
+.venv\Scripts\python.exe fetch_spotify_features.py --output clean_spotify_real.csv
+```
+
+> ⚠️ Spotify 已于 2024-11 对**新建应用**下线 `audio-features` 接口；若返回 403，
+> 请改用 2024-11 之前创建的旧 app，或换公开特征数据集。脚本会给出明确提示。
+> 抓取脚本**绝不丢歌**：搜不到的条目一律原样保留。
 
 ---
 
@@ -212,8 +250,15 @@ SonicNarrative_Project/
 ├── reverse_engine.py                   # v2：反向寻歌引擎（描述 → 特征 → 最近邻）
 ├── usage_example.py                    # 第三步：单函数封装的用法示例
 ├── build_report.py                     # 数据故事报告生成器
+├── fetch_spotify_features.py           # 用 Spotify Web API 抓【真实】音频特征覆写曲库
 ├── main.py                             # FastAPI 平台 API 网关（挂载各子模块路由 / 健康检查）
 ├── gradio_app.py                       # Gradio 前端交互层（纯 HTTP 调后端）
+├── tests/                              # pytest 三层测试 + 真实 LLM 集成测试
+│   ├── test_reverse_engine.py          # 纯函数：距离 / 匹配度 / 曲库 / 兜底
+│   ├── test_synesthesia.py             # 引擎容错：特征夹回 / Mock 出卡
+│   ├── test_api.py                     # API 集成：TestClient 内存调
+│   ├── test_fetch_spotify.py           # 抓取脚本纯逻辑（凭证 / 列契约）
+│   └── test_llm_live.py                # 真实大模型端到端（无 Key 自动 skip）
 ├── core/                               # 平台配置 / 日志 / 子模块运行时探测
 │   ├── config.py                       # 路径、CORS、MODULES 注册表、probe 函数
 │   └── logging_config.py               # 统一日志格式
@@ -228,6 +273,9 @@ SonicNarrative_Project/
 ├── clean_spotify_data.csv              # 清洗后的数据（反向寻歌的曲库）
 ├── SonicNarrative_Insight_Report.md    # 生成的洞察报告
 ├── output_cards/                       # 生成的 HTML 感知卡片
+├── .env.example                        # 环境变量模板（复制为 .env 后填密钥）
+├── .gitignore                          # 排除 .venv / 日志 / .env（密钥不入库）
+├── pytest.ini                          # 测试配置（testpaths / pythonpath / live 标记）
 └── requirements.txt
 ```
 
@@ -237,6 +285,7 @@ SonicNarrative_Project/
 
 - **v1（已完成）**：正向翻译（特征 → HTML 卡片）、批量报告生成
 - **v2（进行中）**：反向寻歌 ✅ **已上线**（描述感受 → 反推特征 → 加权欧氏距离最近邻检索，**无需 embedding / 向量库**）；上传音频自动提取特征（librosa，规划中）
+- **数据工程**：曲库真实音频特征抓取 ✅ **已提供**（`fetch_spotify_features.py`，走 Spotify Web API Client Credentials，无需用户登录）
 - **v3（构想）**：自定义映射参数、3D 沉浸式场景、社区歌单分享
 
 ### v2 反向寻歌（Reverse Recommender）核心思路
@@ -262,32 +311,44 @@ SonicNarrative_Project/
 - 免费/小参数模型（7B–8B）存在**用词与配色收敛**倾向，本项目已用「规则约束 + 批次去重」缓解，换用更大参数模型可进一步改善。
 - Mock 模式是**按特征挑预设**，不是随机返回，但不具备真实模型的创造力。
 - 色彩基调由规则保证，具体色值由模型生成——两者结合，既有可解释性也有随机性。
-- **反向寻歌的曲库越小，最近邻的代表性越弱**。当前 demo 曲库 33 首（约 26 首为 Spotify 音频特征的近似示例值，区间覆盖全），结果仅供演示；扩大曲库后推荐质量会明显提升——只需往 `clean_spotify_data.csv` 追加真实歌曲即可，引擎代码零改动。
+- **曲库 33 首，音频特征目前是「近似示例值」**（区间与分布刻意贴合真实 Spotify 特征，但不是逐首实测）。已提供 `fetch_spotify_features.py` 可一键换成 Spotify 官方实测值，引擎代码零改动、只需重抓一次 CSV。
+- **LLM 链路默认以 Mock / 关键词规则运行**：未配 `DASHSCOPE_API_KEY` 时不会调用真实大模型。配好 Key 后，用 `pytest tests/test_llm_live.py -v` 即可验证真实链路是否通。
+- **曲库仍偏小**：最近邻的代表性随曲库增大而提升。往 `clean_spotify_data.csv` 追加歌曲即可，引擎代码零改动（曲库走 mtime 缓存，改文件自动重载）。
 
 ---
 
 ## 十、测试
 
-项目用 `pytest` 做三层验证，全部**不需要起服务、不需要 API Key**：
+项目用 `pytest` 做分层验证。常规测试**不需要起服务、不需要 API Key**（LLM 分支一律走
+Mock / 关键词规则）；真实大模型链路另有一组 `live` 测试，**配了 Key 才跑、没配自动跳过**。
 
 ```bash
 # 装测试依赖（已装可跳过）
 .venv\Scripts\python.exe -m pip install pytest --index-url https://pypi.org/simple
 
-# 跑全部测试
+# 跑全部（无 Key 时 live 会自动 skip）
 .venv\Scripts\python.exe -m pytest -q
 
 # 只跑某一层
 .venv\Scripts\python.exe -m pytest tests/test_reverse_engine.py -q   # 纯函数
-.venv\Scripts\python.exe -m pytest tests/test_synesthesia.py -q       # 引擎容错
 .venv\Scripts\python.exe -m pytest tests/test_api.py -q               # API 集成
+
+# 只跑真实大模型链路（需先在 .env 配好 DASHSCOPE_API_KEY）
+.venv\Scripts\python.exe -m pytest tests/test_llm_live.py -v
+
+# 排除 live，跑得快一点（适合接 CI）
+.venv\Scripts\python.exe -m pytest -m "not live" -q
 ```
 
 | 层 | 文件 | 测什么 | 关键技术 |
 |---|---|---|---|
-| 单元测试 | `tests/test_reverse_engine.py` | 距离/匹配度/曲库加载/关键词兜底 | 纯函数直接断言 |
-| 引擎测试 | `tests/test_synesthesia.py` | 特征夹回、Mock 出卡、文件名安全 | `use_llm=False` 不联网 |
-| API 集成 | `tests/test_api.py` | /health /reverse /library /translate /422 /CORS | `FastAPI TestClient` 内存调 |
+| 单元测试 | `tests/test_reverse_engine.py` | 距离 / 匹配度 / 曲库加载 / 关键词兜底（9） | 纯函数直接断言 |
+| 引擎测试 | `tests/test_synesthesia.py` | 特征夹回、Mock 出卡、文件名安全（4） | `use_llm=False` 不联网 |
+| API 集成 | `tests/test_api.py` | /health /reverse /library /translate /422 /CORS（6） | `FastAPI TestClient` 内存调 |
+| 抓取脚本 | `tests/test_fetch_spotify.py` | 凭证读取、无凭证安全退出、输出列契约（5） | monkeypatch 隔离环境变量 |
+| 真实 LLM | `tests/test_llm_live.py` | 卡片确由大模型生成、反向寻歌 `mode=llm`（2） | `skipif` 无 Key 自动跳过 |
+
+当前实测：**24 passed, 2 skipped**（skipped 即 live 测试，未配 Key 时的预期行为）。
 
 **加新用例**：在对应文件里写一个 `def test_xxx():`，用 `assert` 表达预期，再跑 `pytest`。退出码 `0`=全通过、`非0`=有失败，可直接接 CI。
 

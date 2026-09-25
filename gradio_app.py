@@ -24,6 +24,15 @@ import os
 import gradio as gr
 import httpx
 
+# 加载项目根目录的 .env（如 SONIC_API_BASE 等前端配置可写在里面；
+# .env 已在 .gitignore 中，密钥不入库）。
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+except Exception:
+    pass
+
 # ----------------------------------------------------------------------
 # 一、后端地址配置
 # ----------------------------------------------------------------------

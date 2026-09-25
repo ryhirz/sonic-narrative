@@ -35,6 +35,16 @@ _PROJECT_ROOT = Path(__file__).resolve().parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
+# 自动加载项目根目录的 .env（密钥只留本机，.env 已在 .gitignore 中）
+# 说明：本模块是【惰性】import synesthesia_core 的，那边顶部也会加载一次；
+#       这里再显式加载一次，是为了保证单独运行本文件时也能读到 Key。
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(_PROJECT_ROOT / ".env")
+except Exception:
+    pass
+
 # ======================================================================
 # 一、常量配置
 # ======================================================================
